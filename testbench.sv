@@ -34,18 +34,30 @@ endtask
 
 task test_01();
     begin
+        A = 0;
+        B = 1;
+        #5;
+        pass &= S == 1 & C == 0;
         // Put your test for A = 0, and B = 1
     end
 endtask
 
 task test_10();
     begin
+        A = 1;
+        B = 0;
+        #5;
+        pass &= S == 1 & C == 0;
         // Put your test for A = 0, and B = 1
     end
 endtask
 
 task test_11 ();
     begin
+        A = 1;
+        B = 1;
+        #5;
+        pass &= S == 1 & C == 1;
         // Put your test for A = 0, and B = 1
     end
 endtask
