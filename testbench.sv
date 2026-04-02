@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-`include "halfadder.sv"
+//`include "halfadder.sv"
 
 module testbench();
 
@@ -13,6 +13,7 @@ reg pass;
 integer tests_failed;
 
 // Instantiate the unit under test
+halfadder uut(A, B, S, C);
 
 initial begin
     // Set up output to VCDD file
@@ -28,7 +29,10 @@ task test_00();
         A = 0;
         B = 0;
         #5;
-        pass &= S == 0 & C == 0;
+        if (!(S == 0 & C == 0)) begin
+            tests_failed = tests_failed + 1;
+            pass = 0;
+        end
     end
 endtask
 
@@ -37,8 +41,10 @@ task test_01();
         A = 0;
         B = 1;
         #5;
-        pass &= S == 1 & C == 0;
-        // Put your test for A = 0, and B = 1
+        if (!(S == 1 & C == 0)) begin
+            tests_failed = tests_failed + 1;
+            pass = 0;
+        end
     end
 endtask
 
@@ -47,8 +53,10 @@ task test_10();
         A = 1;
         B = 0;
         #5;
-        pass &= S == 1 & C == 0;
-        // Put your test for A = 0, and B = 1
+        if (!(S == 1 & C == 0)) begin
+            tests_failed = tests_failed + 1;
+            pass = 0;
+        end        
     end
 endtask
 
@@ -57,14 +65,17 @@ task test_11 ();
         A = 1;
         B = 1;
         #5;
-        pass &= S == 1 & C == 1;
-        // Put your test for A = 0, and B = 1
+        if (!(S == 0 & C == 1)) begin
+            tests_failed = tests_failed + 1;
+            pass = 0;
+        end
     end
 endtask
 
 // Write Checker
 initial begin
-
+    pass = 1'b1;
+    tests_failed = 2'b00;
     test_00(); #15;
     test_01(); #15;
     test_10(); #15;
@@ -73,9 +84,8 @@ initial begin
     if (pass) begin
         $display("Tests Passed!");
     end else begin
-        $display("Failed tests");
+        $display("Tests Failed: %0d", tests_failed);
     end
-
 end
 
 endmodule
